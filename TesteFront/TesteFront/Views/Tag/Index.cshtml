@@ -1,0 +1,33 @@
+﻿@model IEnumerable<TesteFront.Models.Tag>
+
+<h1>Lista de Tags</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Nova Tag</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var tag in Model)
+    {
+        <tr>
+            <td>@tag.Descricao</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@tag.Codigo" class="btn btn-warning">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@tag.Codigo" class="btn btn-danger">Excluir</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

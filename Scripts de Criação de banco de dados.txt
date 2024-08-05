@@ -1,0 +1,84 @@
+/* para realizar os testes deverá ser criado um banco de Dados Local e ajustar a string de Conexão da aplicação na  appsettings.json 
+e ao rodar a aplicação de Front : verificar o endereço da api em :  client.BaseAddress = new Uri("https://localhost:44343/api/"); em Testehsrtech\TesteFront\TesteFront\Program.cs */
+
+-- scripts ---
+CREATE DATABASE LivrariaDB;
+GO
+
+USE LivrariaDB;
+GO
+
+
+CREATE TABLE Livro (
+    Codigo INT PRIMARY KEY IDENTITY(1,1),
+    Titulo NVARCHAR(255) NOT NULL,
+    Autor NVARCHAR(255) NOT NULL,
+    Lancamento DATE NOT NULL,
+    TagID INT NULL,
+    CONSTRAINT FK_Livro_Tag FOREIGN KEY (TagID) REFERENCES Tag(Codigo)
+);
+GO
+
+
+CREATE TABLE Tag (
+    Codigo INT PRIMARY KEY IDENTITY(1,1),
+    Descricao NVARCHAR(255)
+);
+GO
+
+
+CREATE TABLE LivroDigital (
+    Codigo INT PRIMARY KEY,
+    Formato NVARCHAR(50),
+    CONSTRAINT FK_LivroDigital_Livro FOREIGN KEY (Codigo) REFERENCES Livro(Codigo)
+);
+GO
+
+
+CREATE TABLE TipoEncadernacao (
+    Codigo INT PRIMARY KEY IDENTITY(1,1),
+    Nome NVARCHAR(255) NOT NULL,
+    Descricao NVARCHAR(255),
+    Formato NVARCHAR(50)
+);
+GO
+
+
+CREATE TABLE LivroImpresso (
+    Codigo INT PRIMARY KEY,
+    Peso DECIMAL(10, 2) NOT NULL,
+    TipoEncadernacaoID INT NOT NULL,
+    CONSTRAINT FK_LivroImpresso_Livro FOREIGN KEY (Codigo) REFERENCES Livro(Codigo),
+    CONSTRAINT FK_LivroImpresso_TipoEncadernacao FOREIGN KEY (TipoEncadernacaoID) REFERENCES TipoEncadernacao(Codigo)
+);
+GO
+
+
+-- script para criação de Procedure : 
+
+CREATE PROCEDURE sp_ObterLivroPorCodigo
+    @Codigo INT
+AS
+BEGIN
+    SELECT 
+        l.Codigo,
+        l.Titulo,
+        l.Autor,
+        l.Lancamento,
+        l.TagID,
+        t.Codigo AS TagCodigo,
+        t.Descricao AS TagDescricao,
+        ld.Codigo AS LivroDigitalCodigo,
+        ld.Formato AS LivroDigitalFormato,
+        li.Codigo AS LivroImpressoCodigo,
+        li.Peso AS LivroImpressoPeso,
+        li.TipoEncadernacaoID AS LivroImpressoTipoEncadernacaoID
+    FROM Livro l
+    LEFT JOIN Tag t ON l.TagID = t.Codigo
+    LEFT JOIN LivroDigital ld ON l.Codigo = ld.Codigo
+    LEFT JOIN LivroImpresso li ON l.Codigo = li.Codigo
+    WHERE l.Codigo = @Codigo;
+END;
+GO
+
+

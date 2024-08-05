@@ -1,0 +1,40 @@
+﻿@model TesteFront.Models.Livro
+
+<h1>Excluir Livro</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<div class="alert alert-warning">
+    <p>Tem certeza que deseja excluir este livro?</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>@Model.Titulo</h2>
+    </div>
+    <div class="card-body">
+        <p><strong>Autor:</strong> @Model.Autor</p>
+        <p><strong>Data de Lançamento:</strong> @Model.Lancamento.ToString("dd/MM/yyyy")</p>
+        <p><strong>Tag:</strong> @Model.Tag?.Descricao ?? "Sem tag"</p>
+        <p><strong>Tipo:</strong> @(Model.LivroDigital != null ? "Digital" : "Impresso")</p>
+        @if (Model.LivroDigital != null)
+        {
+                <p><strong>Formato Digital:</strong> @Model.LivroDigital.Formato</p>
+        }
+        else if (Model.LivroImpresso != null)
+        {
+                <p><strong>Peso:</strong> @Model.LivroImpresso.Peso kg</p>
+                <p><strong>Tipo de Encadernação:</strong> @Model.LivroImpresso.TipoEncadernacaoID</p>
+        }
+    </div>
+    <div class="card-footer">
+        <form asp-action="Delete" method="post">
+            <input type="hidden" name="id" value="@Model.Codigo" />
+            <button type="submit" class="btn btn-danger">Excluir</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,129 @@
+﻿@model TesteFront.Models.Livro
+
+<h1>Editar Livro</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Codigo" />
+
+    <div class="form-group">
+        <label asp-for="Titulo">Título</label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Autor">Autor</label>
+        <input asp-for="Autor" class="form-control" />
+        <span asp-validation-for="Autor" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Lancamento">Data de Lançamento</label>
+        <input asp-for="Lancamento" class="form-control" type="date" />
+        <span asp-validation-for="Lancamento" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TagID">Tag</label>
+        <select asp-for="TagID" class="form-control">
+            <option value="">Selecione uma Tag</option>
+            @foreach (var tag in ViewBag.Tags)
+            {
+                @if (tag.Codigo == Model.TagID)
+                {
+                    <option value="@tag.Codigo" selected="selected">@tag.Descricao</option>
+                }
+                else
+                {
+                    <option value="@tag.Codigo">@tag.Descricao</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Tipo">Tipo de Livro</label>
+        <select class="form-control" id="Tipo" name="Tipo">
+            <option value="">Selecione o Tipo de Livro</option>
+
+            @if (Model.LivroDigital != null)
+            {
+                <option value="digital" selected="selected">Digital</option>
+                <option value="impresso">Impresso</option>
+            }
+            else if (Model.LivroImpresso != null)
+            {
+                <option value="digital">Digital</option>
+                <option value="impresso" selected="selected">Impresso</option>
+            }
+            else
+            {
+                <option value="digital">Digital</option>
+                <option value="impresso">Impresso</option>
+            }
+        </select>
+    </div>
+
+    <div id="DigitalGroup" style="display: none;">
+        <div class="form-group">
+            <label asp-for="LivroDigital.Formato">Formato Digital</label>
+            <input asp-for="LivroDigital.Formato" class="form-control" />
+            <span asp-validation-for="LivroDigital.Formato" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div id="ImpressoGroup" style="display: none;">
+        <div class="form-group">
+            <label asp-for="LivroImpresso.Peso">Peso do Livro Impresso (kg)</label>
+            <input asp-for="LivroImpresso.Peso" class="form-control" type="number" step="0.1" />
+            <span asp-validation-for="LivroImpresso.Peso" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LivroImpresso.TipoEncadernacaoID">Tipo de Encadernação</label>
+            <select asp-for="LivroImpresso.TipoEncadernacaoID" class="form-control">
+                <option value="0">Selecione o Tipo de Encadernação</option>
+                @foreach (var tipo in ViewBag.TiposEncadernacao)
+                {
+                    @if (tipo.Codigo == Model.LivroImpresso?.TipoEncadernacaoID)
+                    {
+                        <option value="@tipo.Codigo" selected="selected">@tipo.Nome</option>
+                    }
+                    else
+                    {
+                        <option value="@tipo.Codigo">@tipo.Nome</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="LivroImpresso.TipoEncadernacaoID" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Atualizar Livro</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            function toggleFields() {
+                if ($('#Tipo').val() === 'digital') {
+                    $('#DigitalGroup').show();
+                    $('#ImpressoGroup').hide();
+                } else if ($('#Tipo').val() === 'impresso') {
+                    $('#DigitalGroup').hide();
+                    $('#ImpressoGroup').show();
+                } else {
+                    $('#DigitalGroup').hide();
+                    $('#ImpressoGroup').hide();
+                }
+            }
+
+            $('#Tipo').change(function () {
+                toggleFields();
+            });
+
+            toggleFields();
+        });
+    </script>
+}

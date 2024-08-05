@@ -1,0 +1,89 @@
+﻿@model TesteFront.Models.Livro
+
+<h1>Cadastrar Novo Livro</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Titulo">Título</label>
+        <input type="text" class="form-control" id="Titulo" name="Titulo" required />
+    </div>
+    <div class="form-group">
+        <label for="Autor">Autor</label>
+        <input type="text" class="form-control" id="Autor" name="Autor" required />
+    </div>
+    <div class="form-group">
+        <label for="Lancamento">Data de Lançamento</label>
+        <input type="date" class="form-control" id="Lancamento" name="Lancamento" required />
+    </div>
+    <div class="form-group">
+        <label for="TagID">Tag</label>
+        <select class="form-control" id="TagID" name="TagID">
+            <option value="">Selecione uma Tag</option>
+            @foreach (var tag in ViewBag.Tags)
+            {
+                <option value="@tag.Codigo">@tag.Descricao</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="Tipo">Tipo de Livro</label>
+        <select class="form-control" id="Tipo" name="Tipo">
+            <option value="">Selecione o Tipo de Livro</option>
+            <option value="digital">Digital</option>
+            <option value="impresso">Impresso</option>
+        </select>
+    </div>
+
+    <!-- Campos para Formato Digital -->
+    <div id="DigitalGroup" style="display: none;">
+        <div class="form-group">
+            <label for="Formato">Formato Digital</label>
+            <input type="text" class="form-control" id="Formato" name="LivroDigital.Formato" />
+        </div>
+    </div>
+
+    <!-- Campos para Livro Impresso -->
+    <div id="ImpressoGroup" style="display: none;">
+        <div class="form-group">
+            <label for="Peso">Peso do Livro Impresso (kg)</label>
+            <input type="number" step="0.1" class="form-control" id="Peso" name="LivroImpresso.Peso" />
+        </div>
+        <div class="form-group">
+            <label for="TipoEncadernacaoID">Tipo de Encadernação</label>
+            <select class="form-control" id="TipoEncadernacaoID" name="LivroImpresso.TipoEncadernacaoID">
+                <option value="0">Selecione o Tipo de Encadernação</option>
+                @foreach (var tipo in ViewBag.TiposEncadernacao)
+                {
+                    <option value="@tipo.Codigo">@tipo.Nome</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cadastrar Livro</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#Tipo').change(function () {
+                if ($(this).val() === 'digital') {
+                    $('#DigitalGroup').show();
+                    $('#ImpressoGroup').hide();
+                } else if ($(this).val() === 'impresso') {
+                    $('#DigitalGroup').hide();
+                    $('#ImpressoGroup').show();
+                } else {
+                    $('#DigitalGroup').hide();
+                    $('#ImpressoGroup').hide();
+                }
+            });
+        });
+    </script>
+}

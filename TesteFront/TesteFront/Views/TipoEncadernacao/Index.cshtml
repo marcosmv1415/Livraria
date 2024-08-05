@@ -1,0 +1,35 @@
+﻿@model IEnumerable<TipoEncadernacao>
+
+<h1>Tipos de Encadernação</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Formato</th>
+            <th>Opções</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tipo in Model)
+        {
+            <tr>
+                <td>@tipo.Nome</td>
+                <td>@tipo.Descricao</td>
+                <td>@tipo.Formato</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@tipo.Codigo" class="btn btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@tipo.Codigo" class="btn btn-danger">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Adicionar Novo Tipo de Encadernação</a>
